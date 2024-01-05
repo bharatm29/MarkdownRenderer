@@ -1,0 +1,25 @@
+.render-area {
+    min-width: 80vw;
+    min-height: 80vh;
+
+    display: flex;
+
+    gap: 2em;
+}
+
+.text-input {
+    flex: 1;
+    resize: none;
+
+    border: 0;
+    outline: 0;
+}
+
+.text-input:focus {
+    border: 0;
+    outline: 0;
+}
+
+.markdown-render {
+    flex: 1;
+}

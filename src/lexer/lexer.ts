@@ -32,11 +32,11 @@ export class Lexer {
                 break;
 
             default:
-                if (this.isLetter(this.ch)) {
-                    tok = this.readParagraph();
-                } else {
-                    tok = new Token(TokenType.ILLEGAL, "");
-                }
+                // if (this.isLetter(this.ch)) {
+                tok = this.readParagraph();
+            // } else {
+            //     tok = new Token(TokenType.ILLEGAL, "");
+            // }
         }
 
         this.readChar();
@@ -156,7 +156,10 @@ export class Lexer {
     private readParagraph(): Token {
         let pos = this.position;
 
-        while (this.ch !== "\n" && this.isLetter(this.ch)) {
+        while (
+            this.ch !== "\n" &&
+            this.ch !== "\0" /*&& this.isLetter(this.ch)*/
+        ) {
             this.readChar();
         }
 
@@ -166,7 +169,7 @@ export class Lexer {
         );
     }
 
-    private isLetter(char: string) {
-        return (char >= "0" && char <= "9") || (char >= "A" && char <= "z");
-    }
+    // private isLetter(char: string) {
+    //     return (char >= "0" && char <= "9") || (char >= "A" && char <= "z");
+    // }
 }
