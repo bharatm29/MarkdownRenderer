@@ -14,6 +14,8 @@ test("Testing heading lexing", () => {
     const lex: Lexer = new Lexer(input);
 
     const headingTests: Token[] = [
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.H1, "h1"),
         new Token(TokenType.H2, "h2"),
         new Token(TokenType.H3, "h3"),
@@ -41,11 +43,19 @@ test("Testing bold and ittalic lexing", () => {
     const lex: Lexer = new Lexer(input);
 
     const headingTests: Token[] = [
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.BOLD, "bold"),
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.BOLD, "bold"),
+        new Token(TokenType.NEW_LINE, "\n"),
 
         new Token(TokenType.ITTALIC, "ittalic"),
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.ITTALIC, "ittalic"),
+        new Token(TokenType.NEW_LINE, "\n"),
 
         new Token(TokenType.EOF, ""),
     ];
@@ -66,6 +76,8 @@ test("Testing paragraph lexing", () => {
     const lex: Lexer = new Lexer(input);
 
     const headingTests: Token[] = [
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.PARAGRAPH, "para1"),
         new Token(TokenType.PARAGRAPH, "para2"),
         new Token(TokenType.PARAGRAPH, "para3"),
@@ -101,6 +113,8 @@ test("Testing mixed lexing", () => {
     const lex: Lexer = new Lexer(input);
 
     const headingTests: Token[] = [
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.H1, "h1"),
         new Token(TokenType.H2, "h2"),
         new Token(TokenType.H3, "h3"),
@@ -108,10 +122,21 @@ test("Testing mixed lexing", () => {
         new Token(TokenType.H5, "h5"),
         new Token(TokenType.H6, "h6"),
 
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.BOLD, "bold"),
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.BOLD, "bold"),
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.ITTALIC, "ittalic"),
+        new Token(TokenType.NEW_LINE, "\n"),
+
         new Token(TokenType.ITTALIC, "ittalic"),
+        new Token(TokenType.NEW_LINE, "\n"),
+
+        new Token(TokenType.NEW_LINE, "\n"),
 
         new Token(TokenType.PARAGRAPH, "para1"),
         new Token(TokenType.PARAGRAPH, "para2"),

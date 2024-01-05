@@ -59,6 +59,11 @@ export class MDRender {
                     this.nextToken();
                     break;
 
+                case TokenType.NEW_LINE:
+                    this.renderArea.appendChild(document.createElement("br"));
+                    this.nextToken();
+                    break;
+
                 default:
                     this.renderArea.innerText =
                         "Error with rendering things. Illegal or unhandled token encountered";

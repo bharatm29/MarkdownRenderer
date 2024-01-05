@@ -18,6 +18,8 @@ export enum TokenType {
     ITTALIC = "Ittalic",
 
     CODE_BLOCK = "Code_block",
+
+    NEW_LINE = "New_line",
 }
 
 export class Token {

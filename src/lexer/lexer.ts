@@ -27,16 +27,16 @@ export class Lexer {
                 tok = this.readFontStyle();
                 break;
 
+            case '\n':
+                tok = new Token(TokenType.NEW_LINE, '\n');
+                break;
+
             case "\0":
                 tok = new Token(TokenType.EOF, "");
                 break;
 
             default:
-                // if (this.isLetter(this.ch)) {
                 tok = this.readParagraph();
-            // } else {
-            //     tok = new Token(TokenType.ILLEGAL, "");
-            // }
         }
 
         this.readChar();
@@ -58,7 +58,7 @@ export class Lexer {
     private skipWhitespaces() {
         while (
             this.ch == " " ||
-            this.ch == "\n" ||
+            // this.ch == "\n" ||
             this.ch == "\r" ||
             this.ch == "\t"
         ) {
@@ -80,7 +80,7 @@ export class Lexer {
 
         const pos = this.position;
 
-        while ((this.ch as string) !== "\n") {
+        while ((this.ch as string) !== "\n" && (this.ch as string) !== "\0") {
             this.readChar();
         }
 
@@ -116,6 +116,12 @@ export class Lexer {
                 (this.ch === "_" && this.input[this.readPosition] === "_")
             )
         ) {
+            if (this.ch === '\0'){
+                return new Token(
+                    TokenType.PARAGRAPH,
+                    this.input.substring(pos, this.position)
+                );
+            }
             this.readChar();
         }
 
@@ -156,10 +162,7 @@ export class Lexer {
     private readParagraph(): Token {
         let pos = this.position;
 
-        while (
-            this.ch !== "\n" &&
-            this.ch !== "\0" /*&& this.isLetter(this.ch)*/
-        ) {
+        while (this.ch !== "\n" && this.ch !== "\0") {
             this.readChar();
         }
 
@@ -168,8 +171,4 @@ export class Lexer {
             this.input.substring(pos, this.position)
         );
     }
-
-    // private isLetter(char: string) {
-    //     return (char >= "0" && char <= "9") || (char >= "A" && char <= "z");
-    // }
 }
