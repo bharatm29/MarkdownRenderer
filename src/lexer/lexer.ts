@@ -27,8 +27,8 @@ export class Lexer {
                 tok = this.readFontStyle();
                 break;
 
-            case '\n':
-                tok = new Token(TokenType.NEW_LINE, '\n');
+            case "\n":
+                tok = new Token(TokenType.NEW_LINE, "\n");
                 break;
 
             case "\0":
@@ -105,6 +105,8 @@ export class Lexer {
     }
 
     private readBold(): Token {
+        const start = this.ch;
+
         this.readChar();
         this.readChar();
 
@@ -116,10 +118,10 @@ export class Lexer {
                 (this.ch === "_" && this.input[this.readPosition] === "_")
             )
         ) {
-            if (this.ch === '\0'){
+            if (this.ch === "\0") {
                 return new Token(
                     TokenType.PARAGRAPH,
-                    this.input.substring(pos, this.position)
+                    start + start + this.input.substring(pos, this.position)
                 );
             }
             this.readChar();
@@ -134,11 +136,18 @@ export class Lexer {
     }
 
     private readIttalic(): Token {
+        const start = this.ch;
         this.readChar();
 
         let pos = this.position;
 
         while (!(this.ch === "*" || this.ch === "_")) {
+            if (this.ch === "\0") {
+                return new Token(
+                    TokenType.PARAGRAPH,
+                    start + this.input.substring(pos, this.position)
+                );
+            }
             this.readChar();
         }
 
