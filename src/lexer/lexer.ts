@@ -19,8 +19,7 @@ export class Lexer {
 
         switch (this.ch) {
             case "#":
-                tok = this.readHeading();
-                break;
+                return this.readHeading();
 
             case "*":
             case "_":
@@ -36,7 +35,7 @@ export class Lexer {
                 break;
 
             default:
-                tok = this.readParagraph();
+                return this.readParagraph();
         }
 
         this.readChar();
@@ -67,24 +66,25 @@ export class Lexer {
     }
 
     private readHeading(): Token {
+        const pos = this.position;
+
         let astericCount = 0;
 
-        while (this.ch !== " ") {
+        while (this.ch === "#") {
             this.readChar();
             astericCount++;
         }
 
-        //TODO: Handle the case where the next character is not a space
+        if (this.ch !== " ") {
+            return new Token(
+                TokenType.ILLEGAL,
+                this.input.substring(pos, this.position)
+            );
+        }
 
         this.readChar();
 
-        const pos = this.position;
-
-        while ((this.ch as string) !== "\n" && (this.ch as string) !== "\0") {
-            this.readChar();
-        }
-
-        const literal = this.input.substring(pos, this.position);
+        const literal = this.input.substring(pos, this.position - 1);
 
         switch (astericCount) {
             case 1:
@@ -104,74 +104,28 @@ export class Lexer {
         }
     }
 
-    private readBold(): Token {
-        const start = this.ch;
-
-        this.readChar();
-        this.readChar();
-
-        let pos = this.position;
-
-        while (
-            !(
-                (this.ch === "*" && this.input[this.readPosition] === "*") ||
-                (this.ch === "_" && this.input[this.readPosition] === "_")
-            )
-        ) {
-            if (this.ch === "\0") {
-                return new Token(
-                    TokenType.PARAGRAPH,
-                    start + start + this.input.substring(pos, this.position)
-                );
-            }
-            this.readChar();
-        }
-
-        this.readChar();
-
-        return new Token(
-            TokenType.BOLD,
-            this.input.substring(pos, this.position - 1)
-        );
-    }
-
-    private readIttalic(): Token {
-        const start = this.ch;
-        this.readChar();
-
-        let pos = this.position;
-
-        while (!(this.ch === "*" || this.ch === "_")) {
-            if (this.ch === "\0") {
-                return new Token(
-                    TokenType.PARAGRAPH,
-                    start + this.input.substring(pos, this.position)
-                );
-            }
-            this.readChar();
-        }
-
-        return new Token(
-            TokenType.ITTALIC,
-            this.input.substring(pos, this.position)
-        );
-    }
-
     private readFontStyle(): Token {
-        if (
-            (this.ch === "*" && this.input[this.readPosition] === "*") ||
-            (this.ch === "_" && this.input[this.readPosition] === "_")
-        ) {
-            return this.readBold();
+        if (this.ch === "*") {
+            if (this.input[this.readPosition] === "*") {
+                this.readChar();
+                return new Token(TokenType.BOLD, "**");
+            } else {
+                return new Token(TokenType.ITTALIC, "*");
+            }
         } else {
-            return this.readIttalic();
+            if (this.input[this.readPosition] === "_") {
+                this.readChar();
+                return new Token(TokenType.BOLD, "__");
+            } else {
+                return new Token(TokenType.ITTALIC, "_");
+            }
         }
     }
 
     private readParagraph(): Token {
         let pos = this.position;
 
-        while (this.ch !== "\n" && this.ch !== "\0") {
+        while (this.isLiteralChar(this.ch)) {
             this.readChar();
         }
 
@@ -179,5 +133,9 @@ export class Lexer {
             TokenType.PARAGRAPH,
             this.input.substring(pos, this.position)
         );
+    }
+
+    private isLiteralChar(ch: string): boolean {
+        return !/[*_\n\0]+/.test(ch);
     }
 }

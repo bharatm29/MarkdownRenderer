@@ -2,6 +2,7 @@ export enum TokenType {
     EOF = "Eof",
     NULL = "Null",
     ILLEGAL = "Illegal",
+    LITERAL = "Literal",
 
     H1 = "h1",
     H2 = "h2",
