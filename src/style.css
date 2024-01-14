@@ -4,6 +4,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
+p {
+    display: inline;
+}
+
 .render-area {
     min-width: 80vw;
     min-height: 80vh;
@@ -29,3 +33,4 @@
 .markdown-render {
     flex: 1;
 }
+

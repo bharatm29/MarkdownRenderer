@@ -49,7 +49,7 @@ export class MDRender {
 
                 case TokenType.BOLD:
                 case TokenType.ITTALIC:
-                    this.renderFontStyle();
+                    this.renderFontStyles();
                     break;
 
                 case TokenType.PARAGRAPH:
@@ -77,62 +77,91 @@ export class MDRender {
     private nextToken() {
         this.curToken = this.peekToken;
         this.peekToken = this.lex.nextToken();
+
+        console.log(this.peekToken, this.curToken);
+    }
+
+    private expectPeek(expected: TokenType): boolean {
+        if (this.peekToken.type === expected) {
+            this.nextToken();
+            return true;
+        }
+
+        this.renderArea.innerText =
+            "Error with rendering things. Expected " +
+            expected.toString() +
+            ", but got " +
+            this.peekToken.type.toString();
+
+        return false;
     }
 
     private renderHeadings() {
+        const renderHeading = (type: string) => {
+            if (!this.expectPeek(TokenType.PARAGRAPH)) {
+                return;
+            }
+
+            const heading = document.createElement(type);
+            heading.innerText = this.curToken.literal;
+            this.renderArea.appendChild(heading);
+        };
+
         switch (this.curToken.type) {
             case TokenType.H1:
-                const h1 = document.createElement("h1");
-                h1.innerText = this.curToken.literal;
-                this.renderArea.appendChild(h1);
+                renderHeading("h1");
                 break;
 
             case TokenType.H2:
-                const h2 = document.createElement("h2");
-                h2.innerText = this.curToken.literal;
-                this.renderArea.appendChild(h2);
+                renderHeading("h2");
                 break;
 
             case TokenType.H3:
-                const h3 = document.createElement("h3");
-                h3.innerText = this.curToken.literal;
-                this.renderArea.appendChild(h3);
+                renderHeading("h3");
                 break;
 
             case TokenType.H4:
-                const h4 = document.createElement("h4");
-                h4.innerText = this.curToken.literal;
-                this.renderArea.appendChild(h4);
+                renderHeading("h4");
                 break;
 
             case TokenType.H5:
-                const h5 = document.createElement("h5");
-                h5.innerText = this.curToken.literal;
-                this.renderArea.appendChild(h5);
+                renderHeading("h5");
                 break;
 
             case TokenType.H6:
-                const h6 = document.createElement("h6");
-                h6.innerText = this.curToken.literal;
-                this.renderArea.appendChild(h6);
+                renderHeading("h6");
                 break;
         }
 
         this.nextToken();
     }
 
-    private renderFontStyle() {
+    private renderFontStyles() {
+        const renderFontStyle = (type: string) => {
+            if (!this.expectPeek(TokenType.PARAGRAPH)) {
+                return;
+            }
+
+            const style = document.createElement(type);
+            style.innerText = this.curToken.literal;
+            this.renderArea.appendChild(style);
+
+            if (
+                !this.expectPeek(
+                    type == "b" ? TokenType.BOLD : TokenType.ITTALIC
+                )
+            ) {
+                return;
+            }
+        };
+
         switch (this.curToken.type) {
             case TokenType.BOLD:
-                const boldText = document.createElement("b");
-                boldText.innerText = this.curToken.literal;
-                this.renderArea.appendChild(boldText);
+                renderFontStyle("b");
                 break;
 
             case TokenType.ITTALIC:
-                const itallicText = document.createElement("i");
-                itallicText.innerText = this.curToken.literal;
-                this.renderArea.appendChild(itallicText);
+                renderFontStyle("i");
                 break;
         }
 
